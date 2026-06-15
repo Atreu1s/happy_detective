@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Дело о пропавшем артефакте Короля</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Oswald:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0807;
+  --bg2:#13100d;
+  --ink:#e8e0d0;
+  --ink-dim:#9a9080;
+  --gold:#d4af37;
+  --gold-bright:#f5d97a;
+  --gold-deep:#8a6d1f;
+  --blood:#8b1a1a;
+  --blood-bright:#c0392b;
+  --paper:#e8ddc4;
+  --paper-ink:#241c10;
+  --line:#2a2218;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(212,175,55,0.06), transparent 55%),
+    radial-gradient(circle at 80% 90%, rgba(139,26,26,0.07), transparent 50%),
+    var(--bg);
+  color:var(--ink);
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-size:18px;
+  line-height:1.55;
+  min-height:100%;
+  overflow-x:hidden;
+}
+
+/* subtle film grain */
+body::after{
+  content:"";
+  position:fixed; inset:0; z-index:9999; pointer-events:none;
+  opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+  padding:32px 20px 80px;
+  position:relative;
+  z-index:1;
+}
+
+/* ---------- shared ---------- */
+.eyebrow{
+  font-family:'Oswald',sans-serif;
+  font-weight:300;
+  letter-spacing:.42em;
+  text-transform:uppercase;
+  font-size:12px;
+  color:var(--gold);
+  margin-bottom:10px;
+}
+.glove{ filter:drop-shadow(0 0 14px rgba(212,175,55,.35)); }
+
+h1.title{
+  font-family:'Oswald',sans-serif;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  line-height:1.02;
+  font-size:clamp(30px,7vw,52px);
+  color:var(--ink);
+}
+h1.title .accent{ color:var(--gold-bright); display:block; }
+
+.screen{ display:none; animation:fadeIn .7s ease both; }
+.screen.active{ display:block; }
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ---------- intro ---------- */
+.hero{
+  text-align:center;
+  padding:48px 0 24px;
+}
+.hero .glove-mark{ margin:0 auto 26px; width:120px; height:120px; }
+.tagline{
+  font-style:italic;
+  color:var(--ink-dim);
+  font-size:20px;
+  margin:18px auto 34px;
+  max-width:520px;
+}
+
+/* typewriter dossier */
+.dossier{
+  background:linear-gradient(180deg,var(--bg2),#0c0a08);
+  border:1px solid var(--line);
+  border-left:3px solid var(--blood);
+  padding:26px 28px;
+  margin:26px 0;
+  font-family:'Special Elite',monospace;
+  font-size:16px;
+  line-height:1.8;
+  color:var(--ink);
+  box-shadow:0 30px 60px -30px rgba(0,0,0,.8);
+  white-space:pre-wrap;
+  min-height:60px;
+}
+.dossier .sig{ color:var(--gold); }
+
+.caret::after{
+  content:"▌"; color:var(--gold); animation:blink 1s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- buttons & inputs ---------- */
+.btn{
+  font-family:'Oswald',sans-serif;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-size:14px;
+  color:var(--bg);
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+  border:none;
+  padding:15px 30px;
+  border-radius:2px;
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .25s ease, filter .2s;
+  box-shadow:0 8px 26px -10px rgba(212,175,55,.55);
+}
+.btn:hover{ transform:translateY(-2px); filter:brightness(1.08); }
+.btn:active{ transform:translateY(0); }
+.btn.ghost{
+  background:transparent; color:var(--gold);
+  border:1px solid var(--gold-deep); box-shadow:none;
+}
+.btn.ghost:hover{ background:rgba(212,175,55,.08); }
+.btn:disabled{ opacity:.4; cursor:not-allowed; transform:none; }
+
+.field{
+  width:100%;
+  background:#0d0b09;
+  border:1px solid var(--line);
+  border-bottom:2px solid var(--gold-deep);
+  color:var(--ink);
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;
+  padding:14px 16px;
+  border-radius:2px 2px 0 0;
+  outline:none;
+  transition:border-color .2s, box-shadow .2s;
+}
+.field:focus{ border-bottom-color:var(--gold-bright); box-shadow:0 6px 22px -16px var(--gold); }
+.field::placeholder{ color:#6a6354; font-style:italic; }
+
+.shake{ animation:shake .42s cubic-bezier(.36,.07,.19,.97); }
+@keyframes shake{
+  10%,90%{transform:translateX(-2px)} 20%,80%{transform:translateX(4px)}
+  30%,50%,70%{transform:translateX(-8px)} 40%,60%{transform:translateX(8px)}
+}
+
+.row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:18px; }
+.feedback{ margin-top:14px; min-height:24px; font-style:italic; }
+.feedback.bad{ color:var(--blood-bright); }
+.feedback.good{ color:var(--gold-bright); }
+
+/* ---------- evidence board (progress) ---------- */
+.board{
+  display:flex; gap:10px; justify-content:center;
+  margin:26px 0 6px; flex-wrap:wrap;
+}
+.pin{
+  width:34px; height:34px; border-radius:50%;
+  border:1px solid var(--line);
+  background:#0d0b09;
+  display:grid; place-items:center;
+  font-family:'Oswald',sans-serif; font-size:13px; color:var(--ink-dim);
+  position:relative; transition:.3s;
+}
+.pin.done{
+  border-color:var(--gold); color:var(--bg);
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+  box-shadow:0 0 14px -2px var(--gold);
+}
+.pin.current{ border-color:var(--blood-bright); color:var(--blood-bright); box-shadow:0 0 12px -4px var(--blood-bright); }
+
+/* ---------- clue card ---------- */
+.clue-num{
+  font-family:'Oswald',sans-serif; letter-spacing:.3em;
+  text-transform:uppercase; font-size:12px; color:var(--gold);
+  margin-bottom:6px;
+}
+.clue-title{
+  font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase;
+  letter-spacing:.04em; font-size:clamp(24px,5vw,34px); color:var(--ink);
+  margin-bottom:18px;
+}
+.riddle{
+  background:linear-gradient(180deg,#14110d,#0d0b08);
+  border:1px solid var(--line);
+  padding:24px 26px; border-radius:3px;
+  font-size:20px; line-height:1.7; color:var(--ink);
+  box-shadow:inset 0 0 60px -40px var(--gold);
+  position:relative;
+}
+.riddle::before{
+  content:"“"; position:absolute; top:-18px; left:14px;
+  font-size:64px; color:var(--gold-deep); opacity:.5; font-family:Georgia,serif;
+}
+.phys-tag{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--blood-bright);
+  border:1px solid rgba(192,57,43,.4); border-radius:999px;
+  padding:5px 12px; margin-bottom:14px;
+}
+
+/* ---------- hints ---------- */
+.hint-zone{ margin-top:24px; border-top:1px dashed var(--line); padding-top:18px; }
+.hint-lead{ font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:12px; }
+.minilock{ background:#0d0b09; border:1px solid var(--line); padding:16px 18px; border-radius:3px; }
+.minilock p{ font-style:italic; color:var(--ink-dim); margin-bottom:10px; }
+.hints{ display:none; }
+.hints.open{ display:block; animation:fadeIn .5s ease both; }
+.hint{
+  background:#0e0c0a; border-left:2px solid var(--gold-deep);
+  padding:12px 16px; margin-top:10px; border-radius:0 3px 3px 0;
+  color:var(--ink-dim); display:none; animation:fadeIn .4s ease both;
+}
+.hint.show{ display:block; }
+.hint b{ color:var(--gold); }
+
+/* ---------- finale ---------- */
+.finale{ text-align:center; padding:30px 0; }
+.solved{
+  font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase;
+  letter-spacing:.12em; font-size:clamp(34px,9vw,66px);
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold),var(--gold-deep));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  filter:drop-shadow(0 4px 20px rgba(212,175,55,.4));
+  animation:pop .8s cubic-bezier(.2,1.4,.4,1) both;
+}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.reveal-box{
+  margin-top:30px; background:linear-gradient(180deg,#15110c,#0c0a08);
+  border:1px solid var(--gold-deep); border-radius:4px; padding:30px 26px;
+  font-size:22px; line-height:1.7; box-shadow:0 0 50px -20px var(--gold);
+}
+.crown{ font-size:46px; display:block; margin-bottom:10px; }
+
+/* confetti canvas */
+#confetti{ position:fixed; inset:0; pointer-events:none; z-index:50; }
+
+/* footer reset */
+.reset{ text-align:center; margin-top:46px; }
+.reset button{
+  background:none; border:none; color:#4a4438; font-family:'Oswald',sans-serif;
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase; cursor:pointer;
+}
+.reset button:hover{ color:var(--blood-bright); }
+
+img.scene{ max-width:100%; border-radius:3px; display:block; margin:0 auto 8px; }
+
+@media (max-width:520px){
+  body{font-size:17px}
+  .wrap{padding:22px 16px 70px}
+  .dossier,.riddle{padding:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important; animation-iteration-count:1 !important;}
+}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section id="s-intro" class="screen active">
+    <div class="hero">
+      <svg class="glove-mark glove" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#f5d97a"/><stop offset="1" stop-color="#8a6d1f"/>
+        </linearGradient></defs>
+        <path d="M30 92 V52 c0-4 6-4 6 0 V40 c0-5 7-5 7 0 V36 c0-5 7-5 7 0 V40 c0-5 7-5 7 0 V46 c0-5 7-5 7 0 V70 c0 14-8 22-20 22 z"
+          fill="url(#g)" stroke="#f5d97a" stroke-width="1.2"/>
+        <g fill="#fff8e0">
+          <circle cx="33" cy="60" r="1.4"/><circle cx="40" cy="56" r="1.4"/><circle cx="47" cy="55" r="1.4"/>
+          <circle cx="54" cy="56" r="1.4"/><circle cx="61" cy="60" r="1.4"/><circle cx="37" cy="70" r="1.4"/>
+          <circle cx="45" cy="72" r="1.4"/><circle cx="53" cy="71" r="1.4"/><circle cx="58" cy="78" r="1.4"/>
+          <circle cx="44" cy="82" r="1.4"/>
+        </g>
+      </svg>
+      <div class="eyebrow">Конфиденциально · Дело №0608</div>
+      <h1 class="title">Дело о пропавшем<span class="accent">артефакте Короля</span></h1>
+      <p class="tagline">Артефакт Короля поп-музыки исчез из закрытого хранилища. Семь улик отделяют тебя от истины.</p>
+      <button class="btn" id="beginBtn">Открыть дело</button>
+    </div>
+  </section>
+
+  <!-- ============ NAME ============ -->
+  <section id="s-name" class="screen">
+    <div class="eyebrow">Запись допроса</div>
+    <div class="dossier" id="nameIntro"></div>
+    <div id="nameForm" style="display:none">
+      <label class="hint-lead" for="nameInput">Как к вам обращаться, детектив?</label>
+      <input class="field" id="nameInput" placeholder="Ваше имя…" autocomplete="off" />
+      <div class="row">
+        <button class="btn" id="nameBtn">Подтвердить личность</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BRIEFING ============ -->
+  <section id="s-brief" class="screen">
+    <div class="eyebrow">Сообщение от информатора</div>
+    <div class="dossier" id="briefText"></div>
+    <div class="row" id="briefRow" style="display:none">
+      <button class="btn" id="briefBtn">Приступить к расследованию</button>
+    </div>
+  </section>
+
+  <!-- ============ CLUE (dynamic) ============ -->
+  <section id="s-clue" class="screen">
+    <div class="board" id="board"></div>
+    <div class="clue-num" id="clueNum"></div>
+    <div class="clue-title" id="clueTitle"></div>
+    <div id="physTag"></div>
+    <div class="riddle" id="clueRiddle"></div>
+
+    <div class="row">
+      <input class="field" id="answerInput" placeholder="Введите разгадку…" autocomplete="off" style="flex:1;min-width:200px" />
+      <button class="btn" id="answerBtn">Проверить</button>
+    </div>
+    <div class="feedback" id="answerFeedback"></div>
+
+    <div class="hint-zone">
+      <div class="hint-lead">Нужна помощь Тени?</div>
+      <div class="minilock" id="miniLock">
+        <p id="miniQuestion"></p>
+        <div class="row">
+          <input class="field" id="miniInput" placeholder="Ответ на загадку-ключ…" autocomplete="off" style="flex:1;min-width:180px" />
+          <button class="btn ghost" id="miniBtn">Открыть подсказки</button>
+        </div>
+        <div class="feedback" id="miniFeedback"></div>
+      </div>
+      <div class="hints" id="hints">
+        <div class="hint" id="hint0"></div>
+        <div class="hint" id="hint1"></div>
+        <div class="hint" id="hint2"></div>
+        <div class="row" id="hintMoreRow">
+          <button class="btn ghost" id="hintMoreBtn">Ещё подсказка</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINALE ============ -->
+  <section id="s-final" class="screen">
+    <div class="finale">
+      <div class="eyebrow">Статус дела</div>
+      <div class="solved">Дело раскрыто</div>
+      <div class="dossier" id="finalText" style="text-align:left;margin-top:26px"></div>
+      <div class="row" style="justify-content:center" id="revealRow" style="display:none">
+        <button class="btn" id="revealBtn">Узнать, где спрятан артефакт</button>
+      </div>
+      <div class="reveal-box" id="revealBox" style="display:none">
+        <span class="crown">👑</span>
+        <div id="revealText"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="reset">
+    <button id="resetBtn">Сбросить расследование</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   ДАННЫЕ КВЕСТА
+   ========================================================= */
+const CLUES = [
+  {
+    title:"Монстр в ночи",
+    phys:null,
+    riddle:"Я вышел в год, когда мир замер от ужаса, и стал самым продаваемым в истории. Внутри меня девять историй, но помнят одну — про того, кто воет на луну. Назови меня (одним словом, как назван альбом).",
+    answers:["thriller","триллер"],
+    mini:{ q:"Ключ к подсказкам: как по-английски зовётся существо, что воет на луну и охотится в полнолуние? (одно слово)",
+           answers:["werewolf","оборотень","вервольф"] },
+    hints:[
+      "Этот альбом вышел в год, когда все боялись танцующих мертвецов.",
+      "Это самый продаваемый альбом всех времён. Его заглавный клип идёт почти 14 минут.",
+      "Восемь букв, начинается на «T». <b>THRILLER</b> — просто введи это слово."
+    ]
+  },
+  {
+    title:"Певчая улика",
+    phys:"📚 Físическая улика · книжная полка",
+    riddle:"Где-то среди твоих миров спрятана история о змеях и тех, кто поёт. На её обложке золотом горит та, что взлетает к свету — совсем как Король парил над сценой. Назови её — золотое создание с крыльями.",
+    answers:["птица","bird"],
+    mini:{ q:"Ключ к подсказкам: кто встречает рассвет песней и носит перья? (одно слово)",
+           answers:["птица","bird"] },
+    hints:[
+      "Король тоже будто «летал» над сценой — ищи того, кто летает по-настоящему.",
+      "Найди на полке книгу, где в названии есть змеи и поющие создания. Загляни внутрь — там может ждать записка.",
+      "На обложке золотом горит <b>птица</b>. Введи: птица."
+    ]
+  },
+  {
+    title:"Шаг назад",
+    phys:null,
+    riddle:"Я двигаюсь вперёд, оставаясь на месте. Мир впервые увидел меня в 1983-м на юбилее Motown. Возьми моё английское название (одно слово), убери из него «moon» — и введи то, что осталось.",
+    answers:["walk","walk."],
+    mini:{ q:"Ключ к подсказкам: как по-английски «Луна»? (одно слово)",
+           answers:["moon","луна"] },
+    hints:[
+      "Это самое знаменитое движение Короля — кажется, что он скользит назад.",
+      "Английское название состоит из двух частей: «луна» + «идти».",
+      "MOONWALK. Убери MOON — останется <b>WALK</b>."
+    ]
+  },
+  {
+    title:"Тайна специй",
+    phys:"🌶️ Физическая улика · кухня",
+    riddle:"Тень спрятал записку там, где рождается вкус и хранится острота — среди банок и приправ на кухне. Найди её. На записке четыре цифры — цифры начала вашей истории. Введи их.",
+    answers:["0608","608","6.08","06.08"],
+    mini:{ q:"Ключ к подсказкам: сколько цифр в дате, записанной как «день+месяц» (две и две)?",
+           answers:["4","четыре","четыри"] },
+    hints:[
+      "Иди на кухню, ищи записку там, где стоят специи и приправы.",
+      "Эти цифры — важная дата. Не для Короля, а для вас двоих.",
+      "Шестое число восьмого месяца. Введи <b>0608</b>."
+    ]
+  },
+  {
+    title:"Послание Короля",
+    phys:null,
+    riddle:"Тень зашифровал слово сдвигом на 3 буквы назад по латинскому алфавиту: «QHYHUODQG». Расшифруй — это название тайного убежища Короля, страны, что не взрослеет.",
+    answers:["neverland","неверленд"],
+    mini:{ q:"Ключ к подсказкам: какую букву даёт латинская «D», если сдвинуть её на 3 назад?",
+           answers:["a","а","эй"] },
+    hints:[
+      "Каждая буква сдвинута. Юлий Цезарь применял такой шифр.",
+      "Сдвигай каждую букву на 3 назад: Q→N, H→E, Y→V…",
+      "Это поместье Майкла, страна вечного детства. <b>NEVERLAND</b>."
+    ]
+  },
+  {
+    title:"Портал в раме",
+    phys:"🖼️ Физическая улика · спальня",
+    riddle:"Истина скрыта за тем, что недавно украсило вашу стену в комнате снов. Подойди к картине в спальне и загляни за неё. Там — записка с финальным наставлением. Прочти её и введи слово: куда нужно двигаться, чтобы достичь Короля?",
+    answers:["выше","вверх","наверх"],
+    mini:{ q:"Ключ к подсказкам: как называется комната, где спят и видят сны? (одно слово)",
+           answers:["спальня","спальная","bedroom"] },
+    hints:[
+      "Что вы совсем недавно повесили на стену в спальне?",
+      "Загляни ЗА картину — там спрятана записка от Тени. Следуй её совету.",
+      "Король всегда был на вершине. Двигаться нужно <b>выше</b>."
+    ]
+  },
+  {
+    title:"Корона на вершине",
+    phys:null,
+    riddle:"Последняя улика. Все нити сходятся. Назови того, чей артефакт ты искала всё это время — полное имя Короля поп-музыки, имя и фамилию.",
+    answers:["майкл джексон","michael jackson","майкл джэксон","michael joseph jackson"],
+    mini:{ q:"Ключ к подсказкам: назови инициалы Короля поп-музыки (две буквы).",
+           answers:["mj","мдж","м.дж","м дж","мд"] },
+    hints:[
+      "Король поп-музыки. Перчатка, лунная походка, Неверленд.",
+      "Имя и фамилия. Имя начинается на «М», фамилия — на «Дж».",
+      "Это <b>Майкл Джексон</b>."
+    ]
+  }
+];
+
+const NAME_INTRO =
+`23:58. Хранилище вскрыто. Артефакт Короля поп-музыки исчез — ни следов, ни записи на камерах.
+Дело передано вам. Прежде чем мы начнём…`;
+
+function briefText(name){
+  return `Детектив ${name}, говорит Тень.
+
+Я — тот, кто знает всё и не доверяет никому. Кроме вас. Перед вами семь улик: каждая — замок, каждая разгадка — ключ к следующей.
+
+Если застрянете — я оставлю наводки. Но за подсказки придётся заплатить смекалкой: сначала решите маленькую загадку-ключ.
+
+Артефакт где-то рядом. Время идёт. Начинаем.
+
+— Тень`;
+}
+
+function finalText(name){
+  return `Блестящая работа, детектив ${name}.
+
+Семь замков пали. Там, где спотыкались лучшие, вы прошли до конца. Тень редко признаёт чужой талант — но сегодня снимает шляпу.
+
+Артефакт Короля найден. Осталось лишь протянуть руку.`;
+}
+
+const REVEAL_TEXT =
+`Артефакт ждёт там, где рождаются новые начала — <b>в вашей спальне</b>.<br><br>
+Поднимись выше, чем привыкла тянуться: <b>верхняя полка нового шкафа</b>. Тебе понадобится опора под ногами — Король всегда был на вершине.<br><br>
+Загляни наверх. Он ждёт тебя. 👑`;
+
+/* =========================================================
+   СОСТОЯНИЕ + СОХРАНЕНИЕ
+   ========================================================= */
+const SAVE_KEY = "mjQuestSave_v1";
+let state = loadState();
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { name:"", clueIndex:0, screen:"intro", hintsUnlocked:{}, hintsShown:{} };
+}
+function save(){
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+/* =========================================================
+   УТИЛИТЫ
+   ========================================================= */
+const $ = sel => document.querySelector(sel);
+function norm(s){ return (s||"").toLowerCase().replace(/[ё]/g,"е").replace(/[^a-zа-я0-9]/gi,"").trim(); }
+function matches(input, answers){
+  const n = norm(input);
+  return answers.some(a => norm(a) === n);
+}
+function show(screenId){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  $("#"+screenId).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* typewriter */
+function typeWriter(el, text, done){
+  el.textContent = "";
+  el.classList.add("caret");
+  let i = 0;
+  const speed = 18;
+  (function tick(){
+    if(i <= text.length){
+      el.textContent = text.slice(0,i);
+      i++;
+      setTimeout(tick, speed);
+    } else {
+      el.classList.remove("caret");
+      if(done) done();
+    }
+  })();
+}
+
+/* =========================================================
+   ПРОЛОГ / ИМЯ / БРИФИНГ
+   ========================================================= */
+$("#beginBtn").onclick = ()=>{
+  state.screen="name"; save();
+  show("s-name");
+  typeWriter($("#nameIntro"), NAME_INTRO, ()=>{ $("#nameForm").style.display="block"; $("#nameInput").focus(); });
+};
+
+$("#nameBtn").onclick = submitName;
+$("#nameInput").addEventListener("keydown",e=>{ if(e.key==="Enter") submitName(); });
+function submitName(){
+  const v = $("#nameInput").value.trim();
+  if(!v){ $("#nameInput").classList.add("shake"); setTimeout(()=>$("#nameInput").classList.remove("shake"),450); return; }
+  state.name = v; state.screen="brief"; save();
+  goBrief();
+}
+function goBrief(){
+  show("s-brief");
+  typeWriter($("#briefText"), briefText(state.name), ()=>{ $("#briefRow").style.display="flex"; });
+}
+$("#briefBtn").onclick = ()=>{ state.screen="clue"; save(); renderClue(); };
+
+/* =========================================================
+   ОТРИСОВКА УЛИКИ
+   ========================================================= */
+function renderBoard(){
+  const b = $("#board"); b.innerHTML="";
+  CLUES.forEach((c,i)=>{
+    const p=document.createElement("div");
+    p.className="pin"+(i<state.clueIndex?" done":"")+(i===state.clueIndex?" current":"");
+    p.textContent = i<state.clueIndex ? "✓" : (i+1);
+    p.title = "Улика "+(i+1);
+    b.appendChild(p);
+  });
+}
+
+function renderClue(){
+  if(state.clueIndex >= CLUES.length){ goFinal(); return; }
+  show("s-clue");
+  const c = CLUES[state.clueIndex];
+  renderBoard();
+  $("#clueNum").textContent = "Улика "+(state.clueIndex+1)+" из "+CLUES.length;
+  $("#clueTitle").textContent = c.title;
+  $("#physTag").innerHTML = c.phys ? `<span class="phys-tag">${c.phys}</span>` : "";
+  $("#clueRiddle").textContent = c.riddle;
+
+  // reset inputs
+  $("#answerInput").value=""; $("#answerFeedback").textContent=""; $("#answerFeedback").className="feedback";
+  $("#miniInput").value=""; $("#miniFeedback").textContent=""; $("#miniFeedback").className="feedback";
+  $("#miniQuestion").textContent = c.mini.q;
+
+  // hint state for this clue
+  const idx = state.clueIndex;
+  const unlocked = state.hintsUnlocked[idx];
+  const shown = state.hintsShown[idx] || 0;
+  $("#miniLock").style.display = unlocked ? "none" : "block";
+  $("#hints").classList.toggle("open", !!unlocked);
+  renderHints(idx, shown);
+
+  $("#answerInput").focus();
+}
+
+function renderHints(idx, shown){
+  const c = CLUES[idx];
+  [0,1,2].forEach(i=>{
+    const h=$("#hint"+i);
+    h.innerHTML = `<b>Подсказка ${i+1}.</b> ${c.hints[i]}`;
+    h.classList.toggle("show", i < shown);
+  });
+  $("#hintMoreRow").style.display = shown >= 3 ? "none" : "flex";
+}
+
+/* проверка основного ответа */
+$("#answerBtn").onclick = submitAnswer;
+$("#answerInput").addEventListener("keydown",e=>{ if(e.key==="Enter") submitAnswer(); });
+function submitAnswer(){
+  const c = CLUES[state.clueIndex];
+  const val = $("#answerInput").value;
+  const fb = $("#answerFeedback");
+  if(matches(val, c.answers)){
+    fb.textContent = "Улика раскрыта. Тень доволен."; fb.className="feedback good";
+    state.clueIndex++; save();
+    setTimeout(renderClue, 900);
+  } else {
+    fb.textContent = "Не то, детектив. След остыл — попробуй снова."; fb.className="feedback bad";
+    const inp=$("#answerInput"); inp.classList.add("shake"); setTimeout(()=>inp.classList.remove("shake"),450);
+  }
+}
+
+/* мини-загадка для доступа к подсказкам */
+$("#miniBtn").onclick = submitMini;
+$("#miniInput").addEventListener("keydown",e=>{ if(e.key==="Enter") submitMini(); });
+function submitMini(){
+  const c = CLUES[state.clueIndex];
+  const val = $("#miniInput").value;
+  const fb = $("#miniFeedback");
+  if(matches(val, c.mini.answers)){
+    state.hintsUnlocked[state.clueIndex] = true;
+    if(!state.hintsShown[state.clueIndex]) state.hintsShown[state.clueIndex] = 1;
+    save();
+    $("#miniLock").style.display="none";
+    $("#hints").classList.add("open");
+    renderHints(state.clueIndex, state.hintsShown[state.clueIndex]);
+  } else {
+    fb.textContent = "Ключ не подошёл. Подумай ещё."; fb.className="feedback bad";
+    const inp=$("#miniInput"); inp.classList.add("shake"); setTimeout(()=>inp.classList.remove("shake"),450);
+  }
+}
+
+/* открыть следующую подсказку */
+$("#hintMoreBtn").onclick = ()=>{
+  const idx=state.clueIndex;
+  let shown = state.hintsShown[idx]||1;
+  shown = Math.min(3, shown+1);
+  state.hintsShown[idx]=shown; save();
+  renderHints(idx, shown);
+};
+
+/* =========================================================
+   ФИНАЛ
+   ========================================================= */
+function goFinal(){
+  state.screen="final"; save();
+  show("s-final");
+  $("#revealBox").style.display="none";
+  typeWriter($("#finalText"), finalText(state.name), ()=>{ $("#revealRow").style.display="flex"; });
+  launchConfetti();
+}
+$("#revealBtn").onclick = ()=>{
+  $("#revealText").innerHTML = REVEAL_TEXT;
+  $("#revealBox").style.display="block";
+  $("#revealBox").scrollIntoView({behavior:"smooth"});
+  launchConfetti();
+};
+
+/* =========================================================
+   КОНФЕТТИ
+   ========================================================= */
+let confettiPieces=[], confettiRAF=null;
+function launchConfetti(){
+  const cv=$("#confetti"), ctx=cv.getContext("2d");
+  cv.width=innerWidth; cv.height=innerHeight;
+  const colors=["#d4af37","#f5d97a","#8b1a1a","#e8e0d0","#c0392b"];
+  confettiPieces=[];
+  for(let i=0;i<140;i++){
+    confettiPieces.push({
+      x:Math.random()*cv.width, y:-20-Math.random()*cv.height*0.5,
+      r:4+Math.random()*6, c:colors[i%colors.length],
+      vy:2+Math.random()*4, vx:-2+Math.random()*4,
+      rot:Math.random()*6, vrot:-0.2+Math.random()*0.4
+    });
+  }
+  let frames=0;
+  cancelAnimationFrame(confettiRAF);
+  (function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    confettiPieces.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vrot;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle=p.c; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6); ctx.restore();
+    });
+    frames++;
+    if(frames<260){ confettiRAF=requestAnimationFrame(draw); }
+    else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+addEventListener("resize",()=>{ const cv=$("#confetti"); cv.width=innerWidth; cv.height=innerHeight; });
+
+/* =========================================================
+   СБРОС
+   ========================================================= */
+$("#resetBtn").onclick = ()=>{
+  if(confirm("Сбросить весь прогресс расследования? Это нельзя отменить.")){
+    localStorage.removeItem(SAVE_KEY);
+    state = loadState();
+    location.reload();
+  }
+};
+
+/* =========================================================
+   ВОССТАНОВЛЕНИЕ ПРОГРЕССА ПРИ ЗАГРУЗКЕ
+   ========================================================= */
+(function restore(){
+  if(!state.name && state.screen!=="name"){ show("s-intro"); return; }
+  switch(state.screen){
+    case "name":
+      show("s-name");
+      $("#nameIntro").textContent = NAME_INTRO;
+      $("#nameForm").style.display="block";
+      break;
+    case "brief":
+      show("s-brief");
+      $("#briefText").textContent = briefText(state.name);
+      $("#briefRow").style.display="flex";
+      break;
+    case "clue":
+      renderClue();
+      break;
+    case "final":
+      show("s-final");
+      $("#finalText").textContent = finalText(state.name);
+      $("#revealRow").style.display="flex";
+      break;
+    default:
+      show("s-intro");
+  }
+})();
+</script>
+</body>
+</html>
