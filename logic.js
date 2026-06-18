@@ -282,6 +282,16 @@ function submitAnswer(){
     fb.textContent="Улика раскрыта. Маэстро доволен.";fb.className="feedback good";
     // выдать улику в досье
     awardEvidence(idx);
+    // если есть врезка криминалистов — показать её после указанной загадки
+    try{
+      if(typeof FORENSIC_INTERSTITIAL!=="undefined" && idx===FORENSIC_INTERSTITIAL.afterClue){
+        const fi=FORENSIC_INTERSTITIAL;
+        $("#forensicIcon").textContent=fi.icon||"";
+        $("#forensicTitle").textContent=fi.title||"";
+        $("#forensicText").textContent=fi.text||"";
+        $("#forensicModal").classList.add("open");
+      }
+    }catch(e){}
     state.case2.clueIndex++;save();
     renderHubBadge();
     setTimeout(renderClue,1000);
@@ -436,6 +446,7 @@ $$("[data-close]").forEach(b=>{
     if(w==="dossier")$("#dossierModal").classList.remove("open");
     if(w==="notes")$("#notesModal").classList.remove("open");
     if(w==="evdetail")$("#evDetail").classList.remove("open");
+    if(w==="forensic")$("#forensicModal").classList.remove("open");
   };
 });
 // клик по фону оверлея закрывает
