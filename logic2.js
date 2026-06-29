@@ -282,19 +282,14 @@ function submitAnswer(){
     fb.textContent="Улика раскрыта. Маэстро доволен.";fb.className="feedback good";
     // выдать улику в досье
     awardEvidence(idx);
-    // если есть врезка криминалистов — показать её после указанной загадки
-    try{
-      if(typeof FORENSIC_INTERSTITIAL!=="undefined" && idx===FORENSIC_INTERSTITIAL.afterClue){
-        const fi=FORENSIC_INTERSTITIAL;
-        $("#forensicIcon").textContent=fi.icon||"";
-        $("#forensicTitle").textContent=fi.title||"";
-        $("#forensicText").textContent=fi.text||"";
-        $("#forensicModal").classList.add("open");
-      }
-    }catch(e){}
     state.case2.clueIndex++;save();
     renderHubBadge();
-    setTimeout(renderClue,1000);
+    // врезка криминалистов после определённой загадки
+    if(typeof FORENSIC_INTERSTITIAL!=="undefined" && idx===FORENSIC_INTERSTITIAL.afterClue){
+      setTimeout(showForensic,900);
+    } else {
+      setTimeout(renderClue,1000);
+    }
   } else {
     fb.textContent="Не то, детектив. Маэстро ждёт.";fb.className="feedback bad";
     shakeEl($("#answerInput"));
@@ -446,7 +441,6 @@ $$("[data-close]").forEach(b=>{
     if(w==="dossier")$("#dossierModal").classList.remove("open");
     if(w==="notes")$("#notesModal").classList.remove("open");
     if(w==="evdetail")$("#evDetail").classList.remove("open");
-    if(w==="forensic")$("#forensicModal").classList.remove("open");
   };
 });
 // клик по фону оверлея закрывает
@@ -456,7 +450,7 @@ $$("[data-close]").forEach(b=>{
 $$("[data-back]").forEach(b=>{
   b.onclick=()=>{
     const w=b.dataset.back;
-    if(w==="hub"){renderHub();show("s-hub");}
+    if(w==="hub"){window.location.href="index.html";}
     if(w==="clue"){renderClue();}
   };
 });
@@ -465,7 +459,7 @@ $$("[data-back]").forEach(b=>{
 $("#bbScene").onclick=()=>{renderScene();show("s-scene");};
 $("#bbDossier").onclick=()=>openDossier(2);
 $("#bbNotes").onclick=openNotes;
-$("#bbHub").onclick=()=>{renderHub();show("s-hub");};
+$("#bbHub").onclick=()=>{window.location.href="index.html";};
 
 function renderHubBadge(){/* placeholder: hub перерисуется при заходе */}
 
@@ -508,7 +502,7 @@ $("#resetBtn").onclick=()=>{
    СТАРТ
    ============================================================ */
 (function init(){
-  renderHub();
-  // если игрок был внутри дела 2 — можно вернуть его в хаб (безопасный старт)
-  show("s-hub");
+  // case2.html — отдельный файл Дела 2. Сразу открываем Дело 2,
+  // а навигация "к делам" уводит на общий хаб index.html.
+  openCase2();
 })();

@@ -1,0 +1,57 @@
+/* ============================================================
+   SHARED.css — общие стили хрома трилогии (досье/заметки/панель)
+   Использует те же CSS-переменные, что и страницы (--bg, --gold...).
+   ============================================================ */
+
+.tri-overlay{position:fixed;inset:0;background:rgba(5,4,3,.86);backdrop-filter:blur(3px);z-index:200;display:none;overflow-y:auto;padding:20px 14px 40px}
+.tri-overlay.open{display:block;animation:triFade .3s ease both}
+@keyframes triFade{from{opacity:0}to{opacity:1}}
+.tri-modal{max-width:640px;margin:0 auto;background:linear-gradient(180deg,#15110d,#0c0a08);border:1px solid #2a2218;border-radius:8px;padding:22px 20px 28px;position:relative}
+.tri-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#9a9080;font-size:26px;cursor:pointer;line-height:1}
+.tri-close:hover{color:#d4af37}
+.tri-eyebrow{font-family:'Oswald',sans-serif;font-weight:300;letter-spacing:.4em;text-transform:uppercase;font-size:11px;color:#d4af37;margin-bottom:6px}
+.tri-h1{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:26px;color:#e8e0d0;margin-bottom:14px}
+
+.tri-tabs{display:flex;gap:8px;margin:8px 0 18px;flex-wrap:wrap}
+.tri-tab{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9a9080;border:1px solid #2a2218;background:#0d0b09;padding:8px 14px;border-radius:999px;cursor:pointer}
+.tri-tab.active{color:#0a0807;background:linear-gradient(180deg,#f5d97a,#d4af37);border-color:transparent}
+
+.tri-evgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tri-evcard{border:1px solid #2a2218;border-radius:6px;background:#0d0b09;padding:14px 12px;text-align:center;cursor:pointer;transition:transform .12s,border-color .2s}
+.tri-evcard:hover{transform:translateY(-2px);border-color:#8a6d1f}
+.tri-evcard .tri-ei{font-size:28px;display:block;margin-bottom:6px}
+.tri-evcard .tri-en{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#e8e0d0}
+.tri-evcard.locked{opacity:.4;cursor:default}
+.tri-evcard.locked .tri-ei{filter:grayscale(1)}
+.tri-evempty{grid-column:1/-1;text-align:center;color:#9a9080;font-style:italic;padding:30px 10px}
+
+.tri-detail{position:fixed;inset:0;background:rgba(5,4,3,.92);z-index:210;display:none;place-items:center;padding:24px}
+.tri-detail.open{display:grid;animation:triFade .25s ease both}
+.tri-detail-card{max-width:380px;width:100%;background:linear-gradient(180deg,#1a1510,#0c0a08);border:1px solid #8a6d1f;border-radius:10px;padding:28px 24px;text-align:center;box-shadow:0 0 50px -16px #d4af37;animation:triPop .4s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes triPop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.tri-detail-card .tri-big{font-size:60px;margin-bottom:10px;display:block}
+.tri-detail-card h3{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:24px;color:#f5d97a;margin-bottom:10px}
+.tri-detail-card .tri-meta{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#9a9080;margin-bottom:14px}
+.tri-detail-card p{color:#e8e0d0;line-height:1.6;font-size:17px}
+.tri-detail-card .tri-solved{margin-top:16px;font-style:italic;color:#d4af37;font-size:15px}
+.tri-row-c{display:flex;gap:10px;justify-content:center;margin-top:16px}
+
+.tri-notes{width:100%;min-height:240px;background:#0d0b09;border:1px solid #2a2218;border-radius:6px;color:#e8e0d0;font-family:'Caveat',cursive;font-size:22px;line-height:1.5;padding:16px;outline:none;resize:vertical}
+.tri-notes:focus{border-color:#8a6d1f}
+.tri-notehint{font-style:italic;color:#9a9080;font-size:14px;margin-top:8px}
+
+.tri-toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);z-index:300;background:linear-gradient(180deg,#1a1510,#0c0a08);border:1px solid #8a6d1f;border-radius:8px;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;opacity:0;pointer-events:none;box-shadow:0 14px 40px -14px rgba(0,0,0,.9);max-width:90vw;transition:opacity .35s,transform .35s}
+.tri-toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.tri-toast .tri-ti{font-size:26px}
+.tri-toast .tri-tt{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#f5d97a}
+.tri-toast .tri-ts{font-size:15px;color:#e8e0d0}
+
+.tri-bottombar{position:fixed;left:0;right:0;bottom:0;z-index:120;background:linear-gradient(0deg,#0a0807,rgba(10,8,7,.92));border-top:1px solid #2a2218;backdrop-filter:blur(6px)}
+.tri-bb-inner{max-width:680px;margin:0 auto;display:flex;gap:8px;padding:10px 14px}
+.tri-bb-btn{flex:1;background:none;border:1px solid #2a2218;border-radius:6px;color:#9a9080;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:10px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:.2s}
+.tri-bb-btn:hover{color:#d4af37;border-color:#8a6d1f}
+.tri-bb-btn .tri-bi{font-size:18px}
+
+.tri-btn{font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:14px;color:#0a0807;background:linear-gradient(180deg,#f5d97a,#d4af37);border:none;padding:13px 22px;border-radius:3px;cursor:pointer}
+.tri-btn.ghost{background:transparent;color:#d4af37;border:1px solid #8a6d1f}
+.tri-btn.sm{padding:10px 16px;font-size:12px}
